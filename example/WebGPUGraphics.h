@@ -19,9 +19,6 @@ public:
 
     void renderFrame();
 
-    // Get the WebGPU texture for sharing with OpenGL
-    WGPUTexture getSharedTexture() const { return *texture.texture; }
-
     // Legacy method for CPU readback (renamed from renderFrame to avoid confusion)
     juce::Image renderFrameToImage();
 
@@ -29,12 +26,12 @@ public:
     int getTextureWidth() const
     {
         std::lock_guard<std::mutex> lock (textureMutex);
-        return textureWidth;
+        return (int) texture.descriptor.size.width;
     }
     int getTextureHeight() const
     {
         std::lock_guard<std::mutex> lock (textureMutex);
-        return textureHeight;
+        return (int) texture.descriptor.size.height;
     }
 
 private:
@@ -42,8 +39,6 @@ private:
 
     std::atomic<bool> initialized { false };
     std::atomic<bool> shutdownRequested { false };
-    int textureWidth = 0;
-    int textureHeight = 0;
     mutable std::mutex textureMutex; // Protects texture dimensions and resources
 
     WebGPUContext context;

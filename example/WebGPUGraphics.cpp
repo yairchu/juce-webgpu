@@ -10,9 +10,6 @@ bool WebGPUGraphics::initialize (int width, int height)
     if (initialized)
         return true;
 
-    textureWidth = width;
-    textureHeight = height;
-
     if (! context.init())
         return false;
 
@@ -32,7 +29,7 @@ bool WebGPUGraphics::createTexture (int width, int height)
     return texture.init (context, {
                                       .usage = wgpu::TextureUsage::RenderAttachment | wgpu::TextureUsage::CopySrc,
                                       .dimension = WGPUTextureDimension_2D,
-                                      .size = { static_cast<uint32_t> (width), static_cast<uint32_t> (height), 1 },
+                                      .size = { (uint32_t) width, (uint32_t) height, 1 },
                                       .format = WGPUTextureFormat_BGRA8Unorm,
                                       .mipLevelCount = 1,
                                       .sampleCount = 1,
@@ -43,13 +40,9 @@ void WebGPUGraphics::resize (int width, int height)
 {
     std::lock_guard<std::mutex> lock (textureMutex);
 
-    if (! initialized || (width == textureWidth && height == textureHeight))
+    if (! initialized || (width == (int) texture.descriptor.size.width && height == (int) texture.descriptor.size.height))
         return;
 
-    textureWidth = width;
-    textureHeight = height;
-
-    // Recreate textures with new size
     createTexture (width, height);
 }
 
@@ -74,7 +67,7 @@ juce::Image WebGPUGraphics::renderFrameToImage()
     if (! initialized.load() || shutdownRequested.load())
         return {};
 
-    juce::Image image (juce::Image::ARGB, textureWidth, textureHeight, true);
+    juce::Image image (juce::Image::ARGB, (int) texture.descriptor.size.width, (int) texture.descriptor.size.height, true);
     WebGPUJuceUtils::readTextureToImage (context, texture, image);
 
     return image;
