@@ -64,20 +64,3 @@ juce::Image WebGPUGraphics::renderFrameToImage()
 
     return image;
 }
-
-void WebGPUGraphics::shutdown()
-{
-    shutdownRequested.store (true);
-
-    if (! initialized.load())
-        return;
-
-    juce::Logger::writeToLog ("WebGPU shutdown starting...");
-
-    // Process events to ensure completion
-    for (int i = 0; i < 100; ++i) // Max 100ms timeout
-    {
-        context.instance->processEvents();
-        std::this_thread::sleep_for (std::chrono::milliseconds (1));
-    }
-}

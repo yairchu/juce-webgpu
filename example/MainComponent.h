@@ -7,14 +7,12 @@ class MainComponent : public juce::Component, private juce::Timer
 {
 public:
     MainComponent();
-    ~MainComponent() override;
 
     void paint (juce::Graphics&) override;
     void resized() override;
 
 private:
     void timerCallback() override;
-    void renderGraphics();
 
     std::unique_ptr<WebGPUGraphics> webgpuGraphics;
 

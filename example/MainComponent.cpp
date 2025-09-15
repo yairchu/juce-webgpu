@@ -24,12 +24,6 @@ MainComponent::MainComponent()
     }
 }
 
-MainComponent::~MainComponent()
-{
-    isInitialized = false;
-    webgpuGraphics->shutdown();
-}
-
 void MainComponent::paint (juce::Graphics& g)
 {
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
@@ -62,13 +56,6 @@ void MainComponent::resized()
 }
 
 void MainComponent::timerCallback()
-{
-    // Check both flags to prevent rendering during shutdown
-    if (isInitialized)
-        renderGraphics();
-}
-
-void MainComponent::renderGraphics()
 {
     renderedImage = webgpuGraphics->renderFrameToImage();
 }

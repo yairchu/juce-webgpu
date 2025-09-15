@@ -14,25 +14,14 @@ class WebGPUGraphics
 {
 public:
     bool initialize (int width, int height);
-    void shutdown();
     void resize (int width, int height);
 
-    void renderFrame();
-
-    // Legacy method for CPU readback (renamed from renderFrame to avoid confusion)
     juce::Image renderFrameToImage();
 
     bool isInitialized() const { return initialized; }
-    int getTextureWidth() const
-    {
-        return (int) texture.descriptor.size.width;
-    }
-    int getTextureHeight() const
-    {
-        return (int) texture.descriptor.size.height;
-    }
 
 private:
+    void renderFrame();
     bool createTexture (int width, int height);
 
     std::atomic<bool> initialized { false };
