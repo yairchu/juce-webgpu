@@ -10,7 +10,6 @@ MainComponent::MainComponent()
 
     setSize (800, 600);
 
-    // Use the inlined WebGPU functionality
     isInitialized = initializeWebGPU (getWidth(), getHeight());
     if (isInitialized)
     {
@@ -44,7 +43,6 @@ void MainComponent::timerCallback()
     renderedImage = renderFrameToImage();
 }
 
-// WebGPU functionality (inlined from WebGPUGraphics)
 bool MainComponent::initializeWebGPU (int width, int height)
 {
     if (webgpuInitialized)
@@ -84,20 +82,12 @@ void MainComponent::resizeWebGPU (int width, int height)
     createTexture (width, height);
 }
 
-void MainComponent::renderFrame()
-{
-    if (! webgpuInitialized.load() || shutdownRequested.load())
-        return;
-
-    scene.render (context, texture);
-}
-
 juce::Image MainComponent::renderFrameToImage()
 {
-    if (! webgpuInitialized.load() || shutdownRequested.load())
+    if (! webgpuInitialized)
         return {};
 
-    renderFrame();
+    scene.render (context, texture);
 
     juce::Image image (juce::Image::ARGB, (int) texture.descriptor.size.width, (int) texture.descriptor.size.height, true);
     WebGPUJuceUtils::readTextureToImage (context, texture, image);
