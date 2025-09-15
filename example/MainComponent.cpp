@@ -2,17 +2,14 @@
 
 MainComponent::MainComponent()
 {
-    // Initialize WebGPU graphics
     webgpuGraphics = std::make_unique<WebGPUGraphics>();
 
-    // Setup UI components
     statusLabel.setText ("Initializing WebGPU...", juce::dontSendNotification);
     statusLabel.setJustificationType (juce::Justification::centred);
     addAndMakeVisible (statusLabel);
 
     setSize (800, 600);
 
-    // Initialize WebGPU on background thread
     std::thread ([this]()
                  {
         bool success = webgpuGraphics->initialize(getWidth(), getHeight());
@@ -21,7 +18,7 @@ MainComponent::MainComponent()
                 statusLabel.setText("WebGPU initialized successfully!", juce::dontSendNotification);
                 isInitialized = true;
                 // Start timer for continuous rendering
-                startTimer(16); // ~60 FPS
+                startTimer (16); // ~60 FPS
             } else {
                 statusLabel.setText("Failed to initialize WebGPU", juce::dontSendNotification);
             }
@@ -34,14 +31,11 @@ MainComponent::~MainComponent()
     // Stop the timer first to prevent new render calls
     stopTimer();
 
-    // Mark as not initialized to prevent further operations
     isInitialized = false;
 
-    // Shutdown WebGPU before OpenGL context is destroyed
     if (webgpuGraphics)
     {
         webgpuGraphics->shutdown();
-        webgpuGraphics.reset(); // Explicitly release the unique_ptr
     }
 }
 
@@ -71,7 +65,7 @@ void MainComponent::resized()
     statusLabel.setBounds (statusArea);
 
     // Resize WebGPU graphics if initialized
-    if (isInitialized && webgpuGraphics)
+    if (isInitialized)
     {
         webgpuGraphics->resize (getWidth(), getHeight() - 30); // Account for status label
     }
@@ -80,10 +74,8 @@ void MainComponent::resized()
 void MainComponent::timerCallback()
 {
     // Check both flags to prevent rendering during shutdown
-    if (isInitialized && webgpuGraphics && webgpuGraphics->isInitialized())
-    {
+    if (isInitialized)
         renderGraphics();
-    }
 }
 
 void MainComponent::renderGraphics()
