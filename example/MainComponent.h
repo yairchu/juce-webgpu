@@ -1,7 +1,8 @@
 #pragma once
 
-#include "WebGPUGraphics.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+
+class WebGPUGraphics;
 
 class MainComponent : public juce::Component, private juce::Timer
 {

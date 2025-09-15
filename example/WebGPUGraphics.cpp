@@ -1,8 +1,6 @@
 #include "WebGPUGraphics.h"
 #include "WebGPUJuceUtils.h"
-#include <cassert>
 #include <chrono>
-#include <cstring>
 #include <thread>
 
 bool WebGPUGraphics::initialize (int width, int height)

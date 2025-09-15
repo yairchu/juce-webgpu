@@ -1,11 +1,6 @@
 #pragma once
 
-#include <atomic>
-#include <juce_core/juce_core.h>
 #include <juce_gui_basics/juce_gui_basics.h>
-#include <memory>
-#include <mutex>
-#include <webgpu/webgpu-raii.hpp>
 
 #include "WebGPUExampleScene.h"
 #include "WebGPUUtils.h"
@@ -30,6 +25,4 @@ private:
     WebGPUContext context;
     WebGPUExampleScene scene;
     WebGPUTexture texture;
-
-    static constexpr uint32_t bytesPerPixel = 4; // RGBA8
 };

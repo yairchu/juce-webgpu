@@ -1,5 +1,7 @@
 #include "MainComponent.h"
 
+#include "WebGPUGraphics.h"
+
 MainComponent::MainComponent()
 {
     webgpuGraphics = std::make_unique<WebGPUGraphics>();
