@@ -25,12 +25,10 @@ public:
     bool isInitialized() const { return initialized; }
     int getTextureWidth() const
     {
-        std::lock_guard<std::mutex> lock (textureMutex);
         return (int) texture.descriptor.size.width;
     }
     int getTextureHeight() const
     {
-        std::lock_guard<std::mutex> lock (textureMutex);
         return (int) texture.descriptor.size.height;
     }
 
@@ -39,7 +37,6 @@ private:
 
     std::atomic<bool> initialized { false };
     std::atomic<bool> shutdownRequested { false };
-    mutable std::mutex textureMutex; // Protects texture dimensions and resources
 
     WebGPUContext context;
     WebGPUExampleScene scene;

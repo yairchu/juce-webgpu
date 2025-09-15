@@ -10,7 +10,6 @@ void WebGPUJuceUtils::readTextureToImage (WebGPUContext& context, WebGPUTexture&
 
     wgpu::raii::Buffer readbackBuffer = texture.read (context);
 
-    // Copy pixel data (WebGPU uses RGBA, JUCE uses ARGB)
     const int bytesPerRow = texture.bytesPerRow();
     const auto src = (uint8_t*) readbackBuffer->getConstMappedRange (0, bytesPerRow * texture.descriptor.size.height);
     juce::Image::BitmapData bitmap (image, juce::Image::BitmapData::writeOnly);

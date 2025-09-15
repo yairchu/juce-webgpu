@@ -38,8 +38,6 @@ bool WebGPUGraphics::createTexture (int width, int height)
 
 void WebGPUGraphics::resize (int width, int height)
 {
-    std::lock_guard<std::mutex> lock (textureMutex);
-
     if (! initialized || (width == (int) texture.descriptor.size.width && height == (int) texture.descriptor.size.height))
         return;
 
@@ -48,8 +46,6 @@ void WebGPUGraphics::resize (int width, int height)
 
 void WebGPUGraphics::renderFrame()
 {
-    std::lock_guard<std::mutex> lock (textureMutex);
-
     if (! initialized.load() || shutdownRequested.load())
         return;
 
@@ -63,10 +59,6 @@ juce::Image WebGPUGraphics::renderFrameToImage()
 
     renderFrame();
 
-    std::lock_guard<std::mutex> lock (textureMutex);
-    if (! initialized.load() || shutdownRequested.load())
-        return {};
-
     juce::Image image (juce::Image::ARGB, (int) texture.descriptor.size.width, (int) texture.descriptor.size.height, true);
     WebGPUJuceUtils::readTextureToImage (context, texture, image);
 
@@ -76,9 +68,6 @@ juce::Image WebGPUGraphics::renderFrameToImage()
 void WebGPUGraphics::shutdown()
 {
     shutdownRequested.store (true);
-
-    // Acquire lock to ensure no rendering operations are in progress
-    std::lock_guard<std::mutex> lock (textureMutex);
 
     if (! initialized.load())
         return;

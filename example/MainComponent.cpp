@@ -10,33 +10,24 @@ MainComponent::MainComponent()
 
     setSize (800, 600);
 
-    std::thread ([this]()
-                 {
-        bool success = webgpuGraphics->initialize(getWidth(), getHeight());
-        juce::MessageManager::callAsync([this, success]() {
-            if (success) {
-                statusLabel.setText("WebGPU initialized successfully!", juce::dontSendNotification);
-                isInitialized = true;
-                // Start timer for continuous rendering
-                startTimer (16); // ~60 FPS
-            } else {
-                statusLabel.setText("Failed to initialize WebGPU", juce::dontSendNotification);
-            }
-        }); })
-        .detach();
+    isInitialized = webgpuGraphics->initialize (getWidth(), getHeight());
+    if (isInitialized)
+    {
+        statusLabel.setText ("WebGPU initialized successfully!", juce::dontSendNotification);
+        isInitialized = true;
+        // Start timer for continuous rendering
+        startTimer (16); // ~60 FPS
+    }
+    else
+    {
+        statusLabel.setText ("Failed to initialize WebGPU", juce::dontSendNotification);
+    }
 }
 
 MainComponent::~MainComponent()
 {
-    // Stop the timer first to prevent new render calls
-    stopTimer();
-
     isInitialized = false;
-
-    if (webgpuGraphics)
-    {
-        webgpuGraphics->shutdown();
-    }
+    webgpuGraphics->shutdown();
 }
 
 void MainComponent::paint (juce::Graphics& g)
@@ -45,7 +36,6 @@ void MainComponent::paint (juce::Graphics& g)
 
     if (isInitialized && ! renderedImage.isNull())
     {
-        // Draw the WebGPU rendered image
         g.drawImage (renderedImage, getLocalBounds().toFloat());
     }
     else
@@ -80,14 +70,5 @@ void MainComponent::timerCallback()
 
 void MainComponent::renderGraphics()
 {
-    // Render frame on background thread to avoid blocking UI
-    std::thread ([this]()
-                 {
-        juce::Image newImage = webgpuGraphics->renderFrameToImage();
-        
-        juce::MessageManager::callAsync([this, newImage]() {
-            renderedImage = newImage;
-            repaint();
-        }); })
-        .detach();
+    renderedImage = webgpuGraphics->renderFrameToImage();
 }
