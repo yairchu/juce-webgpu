@@ -28,31 +28,15 @@ void MainComponent::paint (juce::Graphics& g)
 {
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
-    if (isInitialized && ! renderedImage.isNull())
-    {
+    if (! renderedImage.isNull())
         g.drawImage (renderedImage, getLocalBounds().toFloat());
-    }
-    else
-    {
-        g.setColour (juce::Colours::white);
-        g.setFont (20.0f);
-        g.drawText ("JUCE WebGPU Graphics Example", getLocalBounds().removeFromTop (60), juce::Justification::centred, true);
-    }
 }
 
 void MainComponent::resized()
 {
-    auto bounds = getLocalBounds();
-
-    // Position status label at top
-    auto statusArea = bounds.removeFromTop (30);
-    statusLabel.setBounds (statusArea);
-
-    // Resize WebGPU graphics if initialized
+    statusLabel.setBounds (getLocalBounds().removeFromTop (30));
     if (isInitialized)
-    {
-        webgpuGraphics->resize (getWidth(), getHeight() - 30); // Account for status label
-    }
+        webgpuGraphics->resize (getWidth(), getHeight());
 }
 
 void MainComponent::timerCallback()
