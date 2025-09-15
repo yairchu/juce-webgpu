@@ -24,6 +24,7 @@ set(WEBGPU_LINK_TYPE STATIC CACHE INTERNAL "WebGPU library linking can be SHARED
 # Instead we export a list of source files that can be added to the user's target.
 set(JUCE_WEBGPU_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/WebGPUJuceUtils.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/WebGPUComponent.cpp"
     CACHE INTERNAL "JUCE WebGPU source files for embedding in dependent projects"
 )
 
