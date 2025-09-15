@@ -92,8 +92,6 @@ if(PROJECT_IS_TOP_LEVEL)
             example/main.cpp
             example/MainComponent.h
             example/MainComponent.cpp
-            example/WebGPUGraphics.h
-            example/WebGPUGraphics.cpp
     )
 
     # Link JUCE modules and our library
