@@ -6,6 +6,7 @@
 
 namespace
 {
+// TODO: Consider using https://github.com/eliemichel/WebGPU-utils instead
 uint32_t getBytesPerPixel (WGPUTextureFormat format)
 {
     switch (format)
