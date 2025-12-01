@@ -105,10 +105,10 @@ wgpu::raii::Buffer WebGPUTexture::read (WebGPUContext& context)
     readbackBuffer->mapAsync (
         WGPUMapMode_Read, 0, bufferSize,
         WGPUBufferMapCallbackInfo {
+            .mode = WGPUCallbackMode_WaitAnyOnly,
             .callback = [] (WGPUMapAsyncStatus status, WGPUStringView, void*, void*) {
                 assert (status == WGPUMapAsyncStatus_Success);
             },
-            .mode = WGPUCallbackMode_WaitAnyOnly
         }
     );
     context.device->poll (true, nullptr);
