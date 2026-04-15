@@ -8,7 +8,7 @@ void WebGPUJuceUtils::readTextureToImage (WebGPUContext& context, WebGPUTexture&
     jassert (texture.descriptor.size.width == (uint32_t) image.getWidth());
     jassert (texture.descriptor.size.height == (uint32_t) image.getHeight());
 
-    wgpu::raii::Buffer readbackBuffer = texture.read (context);
+    const auto& readbackBuffer = texture.read (context);
 
     const int bytesPerRow = texture.bytesPerRow();
     const auto src = (uint8_t*) readbackBuffer->getConstMappedRange (0, bytesPerRow * texture.descriptor.size.height);

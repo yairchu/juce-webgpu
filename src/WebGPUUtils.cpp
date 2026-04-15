@@ -66,16 +66,19 @@ bool WebGPUTexture::init (WebGPUContext& context, const WGPUTextureDescriptor& d
     return view;
 }
 
-wgpu::raii::Buffer WebGPUTexture::read (WebGPUContext& context)
+const wgpu::raii::Buffer& WebGPUTexture::read (WebGPUContext& context)
 {
     const auto rowSize = (uint32_t) bytesPerRow();
     const uint32_t bufferSize = rowSize * descriptor.size.height;
 
-    wgpu::raii::Buffer readbackBuffer = context.device->createBuffer (WGPUBufferDescriptor {
-        .usage = wgpu::BufferUsage::CopyDst | wgpu::BufferUsage::MapRead,
-        .size = bufferSize,
-        .mappedAtCreation = false,
-    });
+    if (! readbackBuffer || readbackBuffer->getSize() != bufferSize)
+    {
+        readbackBuffer = context.device->createBuffer (WGPUBufferDescriptor {
+            .usage = wgpu::BufferUsage::CopyDst | wgpu::BufferUsage::MapRead,
+            .size = bufferSize,
+            .mappedAtCreation = false,
+        });
+    }
 
     {
         wgpu::raii::CommandEncoder encoder = context.device->createCommandEncoder();

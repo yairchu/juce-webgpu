@@ -18,12 +18,13 @@ struct WebGPUTexture
 {
     wgpu::raii::Texture texture;
     wgpu::raii::TextureView view;
+    wgpu::raii::Buffer readbackBuffer;
 
     // The descriptor contains texture size and format
     WGPUTextureDescriptor descriptor;
 
     bool init (WebGPUContext&, const WGPUTextureDescriptor&);
-    wgpu::raii::Buffer read (WebGPUContext&);
+    const wgpu::raii::Buffer& read (WebGPUContext&);
     int bytesPerRow() const;
 };
 
